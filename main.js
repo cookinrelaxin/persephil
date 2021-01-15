@@ -25,24 +25,13 @@ got(url).then(response => {
 					'passage': 	passage.textContent.trim(),
 					'text':		text.trim()
 				};
-		// console.log(entry);
-
-		// console.log(work.textContent);
-		// const entry = {'citation': title, 
-		// console.log(title.textContent);
-		// console.log(kwicRow.textContent);
-
 		entries.push(entry);
-	}
-
-	//console.log(entries);
-	
+	}	
 	serialized = csv.stringify(	entries, 
 					{ 	columns: [ { key: 'text' }, {key: 'work'}, {key: 'passage'} ],
 						delimiter: '|' 
 					});
 	serialized.pipe(fs.createWriteStream(`Latin corpus search ${moment().format('MM-DD-YY HH mm ss')}.csv`));
-
 
 }).catch(err => {
 	console.log(err);
