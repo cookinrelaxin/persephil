@@ -6,7 +6,6 @@ const csv = require('csv');
 const moment = require('moment');
 
 const url = process.argv.slice(2)[0]
-//const url = 'http://artflsrv02.uchicago.edu/cgi-bin/perseus/showrest_?kwic.6.1.5687.0.99.LatinSept18';
 
 got(url).then(response => {
 	const dom = new JSDOM(response.body);
@@ -22,9 +21,9 @@ got(url).then(response => {
 		const work = title.querySelector('b');
 		const passage = title.querySelector('a');
 		
-		const entry = 	{	'work': 		work.textContent,
-					'passage': 	passage.textContent,
-					'text':		text
+		const entry = 	{	'work': 		work.textContent.trim(),
+					'passage': 	passage.textContent.trim(),
+					'text':		text.trim()
 				};
 		// console.log(entry);
 
