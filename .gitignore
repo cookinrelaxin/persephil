@@ -1,4 +1,7 @@
 *.csv
+*.xlsx
+
+.DS_Store
 
 # Logs
 logs

@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/cookinrelaxin/persephil#readme",
   "dependencies": {
-    "csv": "^5.3.2",
+    "exceljs": "^4.2.0",
     "got": "^11.8.1",
     "jsdom": "^16.4.0",
     "moment": "^2.29.1"
