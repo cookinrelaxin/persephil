@@ -17,14 +17,26 @@ got(url).then(response => {
 	const workbook = new excelJS.Workbook();
 	const worksheet = workbook.addWorksheet('Data');
 	worksheet.columns = [
-		{ header: 'Text', key: 'text', width: 75, style: { alignment: { wrapText: true }, border: { right: { style: 'thin' } } } },
-		{ header: 'Work', key: 'work', width: 15 },
-		{ header: 'Passage', key: 'passage', width: 15}
+		{ 	header: 'Text', 
+			key: 'text', 
+			width: 75, 
+			style: { 
+				alignment: { wrapText: true }, 
+				border: { right: { style: 'thin' } } 
+			} 
+		},
+		{ 	header: 'Work', 
+			key: 'work', 
+			width: 15 
+		},
+		{ 	header: 'Passage', 
+			key: 'passage', 
+			width: 15
+		}
 	];
 	worksheet.views = [ { zoomScale: 180 } ]
 
  	for (const kwicRow of kwicRows) {
-		// const text = kwicRow.textContent
 		const title = kwicRow.nextSibling;
 		const work = title.querySelector('b');
 		const passage = title.querySelector('a');
@@ -52,6 +64,12 @@ got(url).then(response => {
 				}
 			}
 		}
+		richText[0].text = richText[0].text.trimStart();
+		if (richText[0].text === '') { richText.shift(); }
+		
+		richText[richText.length-1].text = richText[richText.length-1].text.trimEnd();
+		if (richText[richText.length-1].text === '') { richText.pop(); }
+
 		worksheet.addRow({	text: {richText: richText},
 		 			work: work.textContent.trim(),
 		 			passage: passage.textContent.trim()
@@ -72,7 +90,6 @@ got(url).then(response => {
 	}).catch((err) => {
 		console.log(err);
 	});
-	// serialized.pipe(fs.createWriteStream(filename, {mode: '0444'}));
 
 }).catch(err => {
 	console.log(err);
