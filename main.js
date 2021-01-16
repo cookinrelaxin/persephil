@@ -16,10 +16,11 @@ got(url).then(response => {
 	const workbook = new excelJS.Workbook();
 	const worksheet = workbook.addWorksheet('Data');
 	worksheet.columns = [
-		{ header: 'Text', key: 'text', width: 75, style: { alignment: { wrapText: true } } },
+		{ header: 'Text', key: 'text', width: 75, style: { alignment: { wrapText: true }, font: { name: 'Times New Roman' }, border: { right: { style: 'thin' } } } },
 		{ header: 'Work', key: 'work', width: 15 },
 		{ header: 'Passage', key: 'passage', width: 15}
 	];
+	worksheet.views = [ { zoomScale: 180 } ]
 
  	for (const kwicRow of kwicRows) {
 		const text = kwicRow.textContent
@@ -34,6 +35,7 @@ got(url).then(response => {
 	}
 
 	worksheet.getRow(1).font = { bold: true };
+	worksheet.getRow(1).border = { bottom: { style: 'thin' } };
 	
 	filename = `Latin corpus search ${moment().format('MM-DD-YY HH mm ss')}.xlsx`;
 
