@@ -6,6 +6,7 @@ const excelJS = require('excelJS');
 const moment = require('moment');
 
 const url = process.argv.slice(2)[0]
+const assert = require('assert');
 
 got(url).then(response => {
 	const dom = new JSDOM(response.body);
@@ -16,26 +17,53 @@ got(url).then(response => {
 	const workbook = new excelJS.Workbook();
 	const worksheet = workbook.addWorksheet('Data');
 	worksheet.columns = [
-		{ header: 'Text', key: 'text', width: 75, style: { alignment: { wrapText: true }, font: { name: 'Times New Roman' }, border: { right: { style: 'thin' } } } },
+		{ header: 'Text', key: 'text', width: 75, style: { alignment: { wrapText: true }, border: { right: { style: 'thin' } } } },
 		{ header: 'Work', key: 'work', width: 15 },
 		{ header: 'Passage', key: 'passage', width: 15}
 	];
 	worksheet.views = [ { zoomScale: 180 } ]
 
  	for (const kwicRow of kwicRows) {
-		const text = kwicRow.textContent
+		// const text = kwicRow.textContent
 		const title = kwicRow.nextSibling;
 		const work = title.querySelector('b');
 		const passage = title.querySelector('a');
 
-		worksheet.addRow({	text: text.trim(),
-					work: work.textContent.trim(),
-					passage: passage.textContent.trim()
+		let stk = [];
+		stk.push(kwicRow);
+		const richText = [];
+
+		while(stk.length !== 0){
+
+			let currentNode = stk.pop();
+
+			if (currentNode && currentNode.childNodes && currentNode.childNodes.length >0){
+
+				for(let i = currentNode.childNodes.length - 1; i>=0; i--){
+					stk.push(currentNode.childNodes[i]);
+				}
+			}
+			else {
+				if (currentNode.parentNode.parentNode.tagName == 'B') {
+					richText.push({font: { bold: true, name: 'Times New Roman' }, text: currentNode.textContent });
+				}
+				else {
+					richText.push({font: { bold: false, name: 'Times New Roman' }, text: currentNode.textContent });
+				}
+			}
+		}
+		worksheet.addRow({	text: {richText: richText},
+		 			work: work.textContent.trim(),
+		 			passage: passage.textContent.trim()
 				});
 	}
 
 	worksheet.getRow(1).font = { bold: true };
 	worksheet.getRow(1).border = { bottom: { style: 'thin' } };
+
+	const cell = worksheet.getCell('A2');
+	assert(cell.type == excelJS.ValueType.RichText);
+
 	
 	filename = `Latin corpus search ${moment().format('MM-DD-YY HH mm ss')}.xlsx`;
 
