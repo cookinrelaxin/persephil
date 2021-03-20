@@ -25,6 +25,14 @@ got(url).then(response => {
 				border: { right: { style: 'thin' } } 
 			} 
 		},
+		{ 	header: 'Extract', 
+			key: 'extract', 
+			width: 50, 
+			style: { 
+				alignment: { wrapText: true }, 
+				border: { right: { style: 'thin' } } 
+			} 
+		},
 		{ 	header: 'Work', 
 			key: 'work', 
 			width: 15 
@@ -45,6 +53,10 @@ got(url).then(response => {
 		stk.push(kwicRow);
 		const richText = [];
 
+		var richTextIndex = -1;
+		var richTextFirstBold = -1;
+		var richTextLastBold = -1;
+
 		while(stk.length !== 0){
 
 			let currentNode = stk.pop();
@@ -56,8 +68,13 @@ got(url).then(response => {
 				}
 			}
 			else {
+				richTextIndex++;
+
 				if (currentNode.parentNode.parentNode.tagName == 'B') {
 					richText.push({font: { bold: true, name: 'Times New Roman' }, text: currentNode.textContent });
+
+					if (richTextFirstBold == -1) { richTextFirstBold = richTextIndex }
+					richTextLastBold = richTextIndex;
 				}
 				else {
 					richText.push({font: { bold: false, name: 'Times New Roman' }, text: currentNode.textContent });
@@ -65,12 +82,16 @@ got(url).then(response => {
 			}
 		}
 		richText[0].text = richText[0].text.trimStart();
-		if (richText[0].text === '') { richText.shift(); }
+		if (richText[0].text === '') { richText.shift(); richTextIndex--; richTextFirstBold--; richTextLastBold--;}
 		
 		richText[richText.length-1].text = richText[richText.length-1].text.trimEnd();
 		if (richText[richText.length-1].text === '') { richText.pop(); }
 
+		console.log("richTextFirstBold:", richTextFirstBold);
+		console.log("richTextLastBold:", richTextLastBold);
+
 		worksheet.addRow({	text: {richText: richText},
+					extract: {richText: richText.slice(richTextFirstBold, richTextLastBold+1)},
 		 			work: work.textContent.trim(),
 		 			passage: passage.textContent.trim()
 				});
