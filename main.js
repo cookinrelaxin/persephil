@@ -87,9 +87,6 @@ got(url).then(response => {
 		richText[richText.length-1].text = richText[richText.length-1].text.trimEnd();
 		if (richText[richText.length-1].text === '') { richText.pop(); }
 
-		console.log("richTextFirstBold:", richTextFirstBold);
-		console.log("richTextLastBold:", richTextLastBold);
-
 		worksheet.addRow({	text: {richText: richText},
 					extract: {richText: richText.slice(richTextFirstBold, richTextLastBold+1)},
 		 			work: work.textContent.trim(),
