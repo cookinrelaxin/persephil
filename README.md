@@ -1,4 +1,5 @@
 # Persephil
+![Persephil DOI](https://zenodo.org/badge/330003696.svg)
 
 NOTE 5/22/21: *Perseus under Philologic* has been undergoing recent updates. The code has not been tested against the most recent version.
 
